@@ -1,0 +1,583 @@
+<!--
+  ========================================
+  SITEMAP
+  ========================================
+  /                  → Home (this file)
+  /insights          → Blog / Insights listing
+  /insights/:slug    → Article detail
+  /newsletter        → Newsletter signup + archive
+  /about             → About / Background
+  /services          → Consulting services
+  /contact           → Contact form
+  /privacy           → Privacy policy
+  /terms             → Terms of use
+  /glossary          → 100+ term glossary (React component)
+
+  ========================================
+  CONTENT STRUCTURE (Article Model)
+  ========================================
+  - title (cn/en)
+  - slug
+  - language: cn | en
+  - publishedAt: ISO date
+  - author: { name, avatar, role }
+  - category: payments | stablecoin | agent-commerce | compliance | europe | china-global
+  - tags: string[]
+  - summary (cn/en)
+  - keyTakeaways: string[]
+  - myView (cn/en)              ← original analysis
+  - implications (cn/en)        ← impact on Chinese companies
+  - risksAndOpportunities (cn/en)
+  - recommendedActions (cn/en)
+  - sources: { title, url }[]
+  - relatedArticles: slug[]
+  - newsletterCTA: boolean
+  - contactCTA: boolean
+
+  ========================================
+  DESIGN SYSTEM
+  ========================================
+  Colors:
+    --bg:        #FAFAF7 (warm white)
+    --bg-alt:    #F3F2ED (section alternate)
+    --fg:        #151513 (near-black)
+    --muted:     #7A7A72 (secondary text)
+    --border:    #E5E4DF
+    --accent:    #1A3A6B (deep navy)
+    --accent-h:  #254D8E (hover)
+    --accent-bg: #EDF1F8 (light accent bg)
+    --warm:      #C4713B (warm accent, sparse)
+    --warm-bg:   #FDF5EF
+    --card:      #FFFFFF
+
+  Typography:
+    Display: 'Cormorant Garamond' (serif, editorial authority)
+    Body:    'Source Sans 3' (clean, readable, good CJK pairing)
+    Mono:    'JetBrains Mono' (data, tags)
+    CJK:    'Noto Sans SC' as fallback for Chinese
+
+  Spacing: 4px base unit (4, 8, 12, 16, 24, 32, 48, 64, 80, 120)
+  Radius:  6px (subtle), 10px (cards), 100px (pills)
+  Max-width: 1200px (content), 720px (article prose)
+-->
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="聚焦欧洲支付、稳定币与Agent Commerce的专业洞察平台，服务中国出海企业。Professional insights on European payments, stablecoins, and agent commerce for Chinese global businesses.">
+<title>EdgeFlow — 欧洲支付 · 稳定币 · Agent Commerce | 中国出海企业的合规与战略指南</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Source+Sans+3:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ========== RESET & BASE ========== */
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#FAFAF7;--bg-alt:#F3F2ED;--fg:#151513;--muted:#7A7A72;--border:#E5E4DF;
+  --accent:#1A3A6B;--accent-h:#254D8E;--accent-bg:#EDF1F8;
+  --warm:#C4713B;--warm-bg:#FDF5EF;
+  --card:#FFFFFF;
+  --radius:10px;--radius-sm:6px;--radius-pill:100px;
+  --font-display:'Cormorant Garamond',Georgia,'Noto Serif SC',serif;
+  --font-body:'Source Sans 3','Noto Sans SC',system-ui,sans-serif;
+  --font-mono:'JetBrains Mono',monospace;
+  --max-w:1200px;--prose-w:720px;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--font-body);background:var(--bg);color:var(--fg);line-height:1.7;-webkit-font-smoothing:antialiased;font-size:16px}
+a{color:var(--accent);text-decoration:none;transition:color 0.15s}
+a:hover{color:var(--accent-h)}
+img{max-width:100%;display:block}
+button{cursor:pointer;font-family:inherit}
+
+/* ========== LAYOUT ========== */
+.container{max-width:var(--max-w);margin:0 auto;padding:0 32px}
+.section{padding:80px 0}
+.section-alt{background:var(--bg-alt)}
+.section-dark{background:var(--fg);color:var(--bg)}
+.section-header{text-align:center;max-width:680px;margin:0 auto 48px}
+.section-header h2{font-family:var(--font-display);font-size:clamp(28px,3.5vw,40px);font-weight:500;line-height:1.2;margin-bottom:12px;letter-spacing:-0.3px}
+.section-header p{color:var(--muted);font-size:17px;line-height:1.7}
+.section-dark .section-header p{color:rgba(250,250,247,0.6)}
+
+/* ========== NAV ========== */
+.nav{position:sticky;top:0;z-index:100;background:rgba(250,250,247,0.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;height:64px}
+.nav-brand{font-family:var(--font-display);font-size:22px;font-weight:600;color:var(--fg);letter-spacing:-0.5px}
+.nav-brand span{color:var(--accent)}
+.nav-links{display:flex;align-items:center;gap:32px}
+.nav-links a{font-size:14px;color:var(--muted);font-weight:500;transition:color 0.15s;letter-spacing:0.2px}
+.nav-links a:hover{color:var(--fg);text-decoration:none}
+.nav-right{display:flex;align-items:center;gap:16px}
+.lang-toggle{font-family:var(--font-mono);font-size:12px;color:var(--muted);background:transparent;border:1px solid var(--border);padding:4px 12px;border-radius:var(--radius-pill);transition:all 0.15s;font-weight:500}
+.lang-toggle:hover{border-color:var(--accent);color:var(--accent)}
+.nav-cta{background:var(--accent);color:#fff;padding:8px 22px;border-radius:var(--radius-pill);font-size:13px;font-weight:600;border:none;transition:background 0.15s;letter-spacing:0.3px}
+.nav-cta:hover{background:var(--accent-h);color:#fff;text-decoration:none}
+.nav-mobile{display:none;background:none;border:none;width:32px;height:32px;flex-direction:column;justify-content:center;gap:5px}
+.nav-mobile span{display:block;width:20px;height:1.5px;background:var(--fg);transition:all 0.2s}
+
+/* ========== HERO ========== */
+.hero{padding:100px 0 80px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-120px;right:-200px;width:600px;height:600px;background:radial-gradient(circle,rgba(26,58,107,0.04) 0%,transparent 70%);pointer-events:none}
+.hero-inner{max-width:820px}
+.hero-tag{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:12px;color:var(--accent);background:var(--accent-bg);padding:5px 16px;border-radius:var(--radius-pill);margin-bottom:24px;font-weight:500;letter-spacing:0.5px}
+.hero-tag::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+.hero h1{font-family:var(--font-display);font-size:clamp(36px,5.5vw,64px);font-weight:500;line-height:1.12;margin-bottom:24px;letter-spacing:-0.5px;color:var(--fg)}
+.hero h1 em{font-style:italic;color:var(--accent)}
+.hero-sub{font-size:18px;color:var(--muted);max-width:600px;line-height:1.8;margin-bottom:36px}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap}
+.btn-primary{display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:#fff;padding:14px 32px;border-radius:var(--radius-pill);font-size:15px;font-weight:600;border:2px solid var(--accent);transition:all 0.15s;letter-spacing:0.2px}
+.btn-primary:hover{background:var(--accent-h);border-color:var(--accent-h);color:#fff;text-decoration:none}
+.btn-secondary{display:inline-flex;align-items:center;gap:8px;background:transparent;color:var(--fg);padding:14px 32px;border-radius:var(--radius-pill);font-size:15px;font-weight:600;border:2px solid var(--border);transition:all 0.15s}
+.btn-secondary:hover{border-color:var(--fg);text-decoration:none}
+.hero-metrics{display:flex;gap:48px;margin-top:56px;padding-top:32px;border-top:1px solid var(--border)}
+.hero-metric .num{font-family:var(--font-mono);font-size:28px;font-weight:500;color:var(--fg)}
+.hero-metric .label{font-size:13px;color:var(--muted);margin-top:2px;letter-spacing:0.2px}
+
+/* ========== POSITIONING ========== */
+.positioning{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+.positioning-text h2{font-family:var(--font-display);font-size:clamp(26px,3vw,36px);font-weight:500;line-height:1.2;margin-bottom:16px}
+.positioning-text p{color:var(--muted);font-size:16px;line-height:1.8;margin-bottom:16px}
+.positioning-text .highlight{color:var(--fg);font-weight:600}
+.positioning-cards{display:flex;flex-direction:column;gap:12px}
+.pos-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px 24px;display:flex;gap:16px;align-items:flex-start;transition:border-color 0.2s}
+.pos-card:hover{border-color:var(--accent)}
+.pos-icon{width:40px;height:40px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:16px;font-weight:500;flex-shrink:0}
+.pos-card h4{font-size:15px;font-weight:600;margin-bottom:3px}
+.pos-card p{font-size:13px;color:var(--muted);line-height:1.55}
+.icon-analyze{background:var(--accent-bg);color:var(--accent)}
+.icon-judge{background:var(--warm-bg);color:var(--warm)}
+.icon-impact{background:#EDF8F0;color:#2D7A4F}
+
+/* ========== FEATURED INSIGHTS ========== */
+.insights-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.insight-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:border-color 0.2s,transform 0.2s}
+.insight-card:hover{border-color:var(--accent);transform:translateY(-2px)}
+.insight-body{padding:24px}
+.insight-meta{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.insight-cat{font-family:var(--font-mono);font-size:11px;padding:3px 10px;border-radius:var(--radius-pill);font-weight:500;letter-spacing:0.3px}
+.cat-payments{background:var(--accent-bg);color:var(--accent)}
+.cat-stablecoin{background:#EDF8F0;color:#2D7A4F}
+.cat-agent{background:#F3EFFE;color:#5B47B5}
+.cat-compliance{background:var(--warm-bg);color:var(--warm)}
+.cat-europe{background:#EEF5FB;color:#2A6CB0}
+.cat-china{background:#FEF0EC;color:#C0522A}
+.insight-date{font-size:12px;color:var(--muted)}
+.insight-card h3{font-size:17px;font-weight:600;line-height:1.4;margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.insight-card p{font-size:14px;color:var(--muted);line-height:1.6;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.insight-card .read-more{display:inline-flex;align-items:center;gap:4px;font-size:13px;color:var(--accent);font-weight:500;margin-top:16px}
+
+/* ========== CORE TOPICS ========== */
+.topics-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.topic-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:28px 24px;transition:all 0.2s;cursor:pointer;position:relative;overflow:hidden}
+.topic-card:hover{border-color:var(--accent);transform:translateY(-2px)}
+.topic-card::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:3px 3px 0 0;opacity:0;transition:opacity 0.2s}
+.topic-card:hover::after{opacity:1}
+.topic-card:nth-child(1)::after{background:var(--accent)}
+.topic-card:nth-child(2)::after{background:#2D7A4F}
+.topic-card:nth-child(3)::after{background:#5B47B5}
+.topic-card:nth-child(4)::after{background:var(--warm)}
+.topic-card:nth-child(5)::after{background:#2A6CB0}
+.topic-card:nth-child(6)::after{background:#C0522A}
+.topic-label{font-family:var(--font-mono);font-size:11px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px}
+.topic-card h3{font-size:18px;font-weight:600;margin-bottom:6px}
+.topic-card p{font-size:13px;color:var(--muted);line-height:1.6}
+
+/* ========== WHY IT MATTERS ========== */
+.why-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+.why-card{padding:32px;border-radius:var(--radius);border-left:3px solid var(--border)}
+.why-card:nth-child(1){border-left-color:var(--accent)}
+.why-card:nth-child(2){border-left-color:#2D7A4F}
+.why-card:nth-child(3){border-left-color:var(--warm)}
+.why-card:nth-child(4){border-left-color:#5B47B5}
+.why-card h3{font-size:17px;font-weight:600;margin-bottom:8px}
+.why-card p{font-size:14px;color:var(--muted);line-height:1.7}
+
+/* ========== NEWSLETTER ========== */
+.newsletter-section{padding:80px 0}
+.newsletter-box{background:var(--fg);border-radius:16px;padding:64px;display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;position:relative;overflow:hidden}
+.newsletter-box::after{content:'';position:absolute;top:-100px;right:-100px;width:300px;height:300px;background:radial-gradient(circle,rgba(26,58,107,0.3) 0%,transparent 70%);pointer-events:none}
+.newsletter-text h2{font-family:var(--font-display);font-size:32px;font-weight:500;color:#fff;margin-bottom:12px;line-height:1.2}
+.newsletter-text p{color:rgba(255,255,255,0.55);font-size:15px;line-height:1.7}
+.newsletter-text ul{list-style:none;margin-top:16px}
+.newsletter-text li{color:rgba(255,255,255,0.7);font-size:14px;padding:4px 0;display:flex;align-items:center;gap:8px}
+.newsletter-text li::before{content:'';width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,0.4);flex-shrink:0}
+.newsletter-form{position:relative;z-index:1}
+.newsletter-form label{display:block;color:rgba(255,255,255,0.5);font-size:13px;margin-bottom:8px;font-weight:500}
+.newsletter-form input{width:100%;padding:14px 18px;border-radius:var(--radius);border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.06);color:#fff;font-size:15px;outline:none;margin-bottom:12px;transition:border-color 0.15s;font-family:var(--font-body)}
+.newsletter-form input::placeholder{color:rgba(255,255,255,0.3)}
+.newsletter-form input:focus{border-color:rgba(255,255,255,0.3)}
+.newsletter-form button{width:100%;padding:14px;border-radius:var(--radius);background:#fff;color:var(--fg);font-size:15px;font-weight:600;border:none;transition:opacity 0.15s;letter-spacing:0.2px}
+.newsletter-form button:hover{opacity:0.9}
+.newsletter-form .note{font-size:12px;color:rgba(255,255,255,0.35);margin-top:8px}
+
+/* ========== CONSULTING CTA ========== */
+.consulting-cta{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+.consulting-text h2{font-family:var(--font-display);font-size:clamp(26px,3vw,36px);font-weight:500;line-height:1.2;margin-bottom:12px}
+.consulting-text p{color:var(--muted);font-size:16px;line-height:1.8;margin-bottom:24px}
+.consulting-services{display:flex;flex-direction:column;gap:12px}
+.svc-item{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px 24px;transition:border-color 0.2s}
+.svc-item:hover{border-color:var(--accent)}
+.svc-item h4{font-size:15px;font-weight:600;margin-bottom:3px}
+.svc-item p{font-size:13px;color:var(--muted);line-height:1.5}
+
+/* ========== FOOTER ========== */
+.footer{background:var(--fg);color:rgba(250,250,247,0.5);padding:64px 0 32px}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;margin-bottom:48px}
+.footer-brand{font-family:var(--font-display);font-size:20px;font-weight:600;color:#fff;margin-bottom:12px}
+.footer-desc{font-size:13px;line-height:1.7;max-width:280px}
+.footer h5{color:rgba(255,255,255,0.7);font-size:12px;text-transform:uppercase;letter-spacing:1px;margin-bottom:16px;font-weight:600}
+.footer ul{list-style:none}
+.footer li{margin-bottom:8px}
+.footer li a{color:rgba(255,255,255,0.45);font-size:14px;transition:color 0.15s}
+.footer li a:hover{color:#fff;text-decoration:none}
+.footer-bottom{border-top:1px solid rgba(255,255,255,0.08);padding-top:24px;display:flex;justify-content:space-between;align-items:center;font-size:12px}
+
+/* ========== RESPONSIVE ========== */
+@media(max-width:900px){
+  .nav-links{display:none}
+  .nav-mobile{display:flex}
+  .hero-metrics{flex-wrap:wrap;gap:24px}
+  .positioning{grid-template-columns:1fr}
+  .insights-grid{grid-template-columns:1fr}
+  .topics-grid{grid-template-columns:1fr 1fr}
+  .why-grid{grid-template-columns:1fr}
+  .newsletter-box{grid-template-columns:1fr;padding:40px 28px}
+  .consulting-cta{grid-template-columns:1fr}
+  .footer-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:600px){
+  .container{padding:0 20px}
+  .section{padding:56px 0}
+  .topics-grid{grid-template-columns:1fr}
+  .hero{padding:64px 0 48px}
+  .footer-grid{grid-template-columns:1fr}
+}
+
+/* ========== ANIMATIONS ========== */
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.fade-up{animation:fadeUp 0.6s ease-out both}
+.delay-1{animation-delay:0.1s}.delay-2{animation-delay:0.2s}.delay-3{animation-delay:0.3s}.delay-4{animation-delay:0.4s}
+</style>
+</head>
+<body>
+
+<!-- ========== NAVIGATION ========== -->
+<nav class="nav">
+  <div class="container nav-inner">
+    <a href="/" class="nav-brand">Edge<span>Flow</span></a>
+    <div class="nav-links">
+      <a href="#insights">Insights</a>
+      <a href="#topics">Topics</a>
+      <a href="#newsletter">Newsletter</a>
+      <a href="/about">About</a>
+      <a href="/services">Services</a>
+    </div>
+    <div class="nav-right">
+      <button class="lang-toggle" onclick="this.textContent=this.textContent==='EN'?'中文':'EN'">EN</button>
+      <a href="#contact" class="nav-cta">Contact</a>
+    </div>
+    <button class="nav-mobile" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- ========== HERO ========== -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-inner fade-up">
+      <div class="hero-tag">Payments · Stablecoins · Agent Commerce · Europe</div>
+      <h1>中国企业出海欧洲的<br><em>支付合规与战略指南</em></h1>
+      <p class="hero-sub">聚焦欧洲支付、稳定币与 Agent Commerce 的交叉领域。不搬运新闻，只提供专业判断、原创观点、以及对中国出海企业的深度影响分析。</p>
+      <div class="hero-actions">
+        <a href="#newsletter" class="btn-primary">订阅周报 Subscribe</a>
+        <a href="#contact" class="btn-secondary">预约咨询 Book a Call</a>
+      </div>
+    </div>
+    <div class="hero-metrics fade-up delay-2">
+      <div class="hero-metric"><div class="num">$318B</div><div class="label">Global stablecoin market cap</div></div>
+      <div class="hero-metric"><div class="num">Jul 2026</div><div class="label">MiCA full enforcement</div></div>
+      <div class="hero-metric"><div class="num">$3-5T</div><div class="label">Agent commerce by 2030</div></div>
+      <div class="hero-metric"><div class="num">27</div><div class="label">EU states, one passport</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== POSITIONING ========== -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="positioning">
+      <div class="positioning-text fade-up">
+        <h2>不是资讯搬运<br>是<em style="font-family:var(--font-display);font-style:italic;color:var(--accent)">专业判断</em></h2>
+        <p>市场上不缺稳定币新闻和支付行业快讯。缺的是有人把这些信息<span class="highlight">翻译成中国出海企业能听懂的语言</span>，并给出可执行的建议。</p>
+        <p>我们深耕欧洲市场，每周追踪 MiCA 监管动态、稳定币格局变化、Agent Commerce 协议演进，并从中国企业出海的视角提供独到分析。</p>
+      </div>
+      <div class="positioning-cards fade-up delay-1">
+        <div class="pos-card">
+          <div class="pos-icon icon-analyze">01</div>
+          <div>
+            <h4>聚合与理解</h4>
+            <p>从 CoinDesk、PYMNTS、Ledger Insights 等 10+ 源追踪行业动态，提炼关键信号。</p>
+          </div>
+        </div>
+        <div class="pos-card">
+          <div class="pos-icon icon-judge">02</div>
+          <div>
+            <h4>专业判断</h4>
+            <p>不止报道发生了什么——分析为什么发生、会怎样发展、以及你应该怎么做。</p>
+          </div>
+        </div>
+        <div class="pos-card">
+          <div class="pos-icon icon-impact">03</div>
+          <div>
+            <h4>出海影响分析</h4>
+            <p>每篇内容都回答一个核心问题：这对在欧洲做生意的中国企业意味着什么？</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== FEATURED INSIGHTS ========== -->
+<section class="section" id="insights">
+  <div class="container">
+    <div class="section-header fade-up">
+      <h2>Latest Insights</h2>
+      <p>每周更新的深度分析，覆盖支付、稳定币、Agent Commerce 与欧洲合规</p>
+    </div>
+    <div class="insights-grid">
+      <div class="insight-card fade-up delay-1">
+        <div class="insight-body">
+          <div class="insight-meta">
+            <span class="insight-cat cat-compliance">Compliance</span>
+            <span class="insight-date">Apr 6, 2026</span>
+          </div>
+          <h3>US Treasury 发布 GENIUS Act 首项实施细则——对欧洲意味着什么</h3>
+          <p>州级对等框架的出台为跨大西洋稳定币互操作性开启了新篇章。我们解析对 MiCA 持牌企业的具体影响。</p>
+          <a href="#" class="read-more">阅读分析 →</a>
+        </div>
+      </div>
+      <div class="insight-card fade-up delay-2">
+        <div class="insight-body">
+          <div class="insight-meta">
+            <span class="insight-cat cat-agent">Agent Commerce</span>
+            <span class="insight-date">Apr 3, 2026</span>
+          </div>
+          <h3>Stripe MPP vs Coinbase x402：哪个协议会赢得 Agent 支付之战？</h3>
+          <p>一个支持法币+加密双轨，一个是 HTTP 原生稳定币协议。我们从架构、采用率和欧洲商家视角做对比。</p>
+          <a href="#" class="read-more">阅读分析 →</a>
+        </div>
+      </div>
+      <div class="insight-card fade-up delay-3">
+        <div class="insight-body">
+          <div class="insight-meta">
+            <span class="insight-cat cat-stablecoin">Stablecoin</span>
+            <span class="insight-date">Mar 31, 2026</span>
+          </div>
+          <h3>Qivalis CEO 警告：没有欧元稳定币，欧洲将面临"数字美元化"</h3>
+          <p>12 家欧洲大行联手发行 MiCA 合规欧元稳定币。在数字欧元 2029 年到来前，谁来填补空白？</p>
+          <a href="#" class="read-more">阅读分析 →</a>
+        </div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:36px" class="fade-up delay-4">
+      <a href="/insights" class="btn-secondary">查看全部洞察 View All →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ========== CORE TOPICS ========== -->
+<section class="section section-alt" id="topics">
+  <div class="container">
+    <div class="section-header fade-up">
+      <h2>Core Topics</h2>
+      <p>六大核心领域，覆盖中国企业出海欧洲的支付与合规全景</p>
+    </div>
+    <div class="topics-grid">
+      <div class="topic-card fade-up delay-1">
+        <div class="topic-label">Payments</div>
+        <h3>支付</h3>
+        <p>跨境支付基础设施、SEPA、Wero、支付服务指令 PSD2/PSR，以及支付行业格局变化。</p>
+      </div>
+      <div class="topic-card fade-up delay-1">
+        <div class="topic-label">Stablecoin</div>
+        <h3>稳定币</h3>
+        <p>USDC、USDT、欧元稳定币、储备机制、发行与赎回、Open Issuance 以及市场动态。</p>
+      </div>
+      <div class="topic-card fade-up delay-2">
+        <div class="topic-label">Agent Commerce</div>
+        <h3>代理商务</h3>
+        <p>AI Agent 支付、ACP/UCP/AP2/MPP/x402 协议、机器对机器交易、以及未来商务形态。</p>
+      </div>
+      <div class="topic-card fade-up delay-2">
+        <div class="topic-label">Compliance</div>
+        <h3>合规</h3>
+        <p>MiCA 监管框架、GENIUS Act、EMI/CASP 牌照、AML/KYC、Travel Rule 以及合规实操。</p>
+      </div>
+      <div class="topic-card fade-up delay-3">
+        <div class="topic-label">Europe</div>
+        <h3>欧洲市场</h3>
+        <p>数字欧元、Qivalis 银行联盟、ESMA 执法、各成员国监管差异以及欧洲 fintech 生态。</p>
+      </div>
+      <div class="topic-card fade-up delay-3">
+        <div class="topic-label">China Global</div>
+        <h3>中国出海</h3>
+        <p>出海企业欧洲支付痛点、跨境结算优化、合规准入策略、以及成功案例拆解。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== WHY IT MATTERS ========== -->
+<section class="section">
+  <div class="container">
+    <div class="section-header fade-up">
+      <h2>Why It Matters</h2>
+      <p>为什么中国出海企业现在必须理解这些领域</p>
+    </div>
+    <div class="why-grid">
+      <div class="why-card fade-up delay-1">
+        <h3>欧洲监管正在重塑市场准入门槛</h3>
+        <p>MiCA 2026 年 7 月全面执行，未获授权的服务商将被清退。合规不再是可选项，而是入场券。12.5% 年营收的罚款让试错成本极高。</p>
+      </div>
+      <div class="why-card fade-up delay-2">
+        <h3>稳定币正在重构跨境支付经济学</h3>
+        <p>传统代理行收 3-5% 手续费、3-5 天到账。稳定币做到接近零成本、秒级结算。2025 年稳定币交易量达 $33 万亿，超过 Visa。</p>
+      </div>
+      <div class="why-card fade-up delay-3">
+        <h3>Agent Commerce 将改变交易入口</h3>
+        <p>AI Agent 代替人类发现、比较、购买商品。到 2030 年代理商务可能达 $3-5 万亿。你的产品如果对 Agent 不可见，就对未来不可见。</p>
+      </div>
+      <div class="why-card fade-up delay-4">
+        <h3>合规将成为长期竞争力</h3>
+        <p>MiCA 的护照机制让合规企业一地获许、全欧运营。严监管正在清洗弱玩家，为合规企业创造竞争空间。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== NEWSLETTER ========== -->
+<section class="newsletter-section" id="newsletter">
+  <div class="container">
+    <div class="newsletter-box fade-up">
+      <div class="newsletter-text">
+        <h2>Weekly Briefing<br>每周一发送</h2>
+        <p>欧洲支付与稳定币领域最值得关注的动态，配合原创分析和出海视角。免费订阅。</p>
+        <ul>
+          <li>本周 3 条重要事件及影响分析</li>
+          <li>1 个核心概念深度解读</li>
+          <li>对中国出海企业的具体建议</li>
+          <li>中英文双语，适合转发给团队</li>
+        </ul>
+      </div>
+      <div class="newsletter-form">
+        <label>Work Email</label>
+        <input type="email" placeholder="you@company.com">
+        <label>Name（可选）</label>
+        <input type="text" placeholder="Your name">
+        <button>Subscribe 订阅</button>
+        <div class="note">Free · Weekly · No spam · Unsubscribe anytime</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== CONSULTING CTA ========== -->
+<section class="section section-alt" id="contact">
+  <div class="container">
+    <div class="consulting-cta">
+      <div class="consulting-text fade-up">
+        <h2>需要更深入的支持？</h2>
+        <p>如果你的企业正在进入欧洲市场，或正在评估稳定币和 Agent Commerce 的战略机会，我们可以帮你理清方向、对接资源、加速决策。</p>
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+          <a href="/services" class="btn-primary">了解咨询服务</a>
+          <a href="/contact" class="btn-secondary">直接联系</a>
+        </div>
+      </div>
+      <div class="consulting-services fade-up delay-1">
+        <div class="svc-item">
+          <h4>欧洲支付与监管趋势解读</h4>
+          <p>帮你理解 MiCA、PSD2/PSR 对你的业务意味着什么，以及如何制定合规策略。</p>
+        </div>
+        <div class="svc-item">
+          <h4>稳定币跨境支付机会分析</h4>
+          <p>评估稳定币在你的业务场景中的 ROI，选择合适的合作伙伴和技术栈。</p>
+        </div>
+        <div class="svc-item">
+          <h4>Agent Commerce 商业模式判断</h4>
+          <p>理解 ACP/UCP/AP2 协议生态，评估你的产品在 agent 经济中的位置。</p>
+        </div>
+        <div class="svc-item">
+          <h4>出海欧洲战略与资源对接</h4>
+          <p>从市场进入策略到 PSP/银行合作伙伴推荐，加速你的欧洲业务落地。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== FOOTER ========== -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">EdgeFlow</div>
+        <p class="footer-desc">聚焦欧洲支付、稳定币与 Agent Commerce 的专业洞察平台。为中国出海企业提供合规指南与战略建议。</p>
+      </div>
+      <div>
+        <h5>Content</h5>
+        <ul>
+          <li><a href="/insights">Insights</a></li>
+          <li><a href="/glossary">Glossary 术语表</a></li>
+          <li><a href="/newsletter">Newsletter</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Company</h5>
+        <ul>
+          <li><a href="/about">About</a></li>
+          <li><a href="/services">Services</a></li>
+          <li><a href="/contact">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Connect</h5>
+        <ul>
+          <li><a href="#">LinkedIn</a></li>
+          <li><a href="#">Twitter / X</a></li>
+          <li><a href="#">WeChat 微信</a></li>
+          <li><a href="mailto:hello@edgeflow.eu">hello@edgeflow.eu</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 EdgeFlow. Built in Paris.</span>
+      <span>
+        <a href="/privacy" style="color:rgba(255,255,255,0.4)">Privacy</a> · 
+        <a href="/terms" style="color:rgba(255,255,255,0.4)">Terms</a>
+      </span>
+    </div>
+  </div>
+</footer>
+
+<!-- ========== SCROLL ANIMATION ========== -->
+<script>
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.style.animationPlayState = 'running';
+      obs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.fade-up').forEach(el => {
+  el.style.animationPlayState = 'paused';
+  obs.observe(el);
+});
+</script>
+
+</body>
+</html>
